@@ -1,5 +1,7 @@
 package snake;
 
+import snake.gameLogic.Direction;
+
 import java.util.*;
 import java.io.IOException;
 
@@ -30,74 +32,74 @@ import java.io.IOException;
  * - Ajouter des commentaires
  */
 public class BadSnake {
-    public static int[] mv(int[] h, String d) {
-        int[] k = new int[]{h[0], h[1]};
-        if (d.equals("L")) k[1]--;
-        else if (d.equals("R")) k[1]++;
-        else if (d.equals("U")) k[0]--;
-        else if (d.equals("D")) k[0]++;
-        return k;
+    public static int[] move(int[] height, Direction direction) {
+        int[] key = new int[]{height[0], height[1]};
+        if (direction.equals("L")) key[1]--;
+        else if (direction.equals("R")) key[1]++;
+        else if (direction.equals("U")) key[0]--;
+        else if (direction.equals("D")) key[0]++;
+        return key;
     }
 
     public static void main(String[] args) throws Exception {
-        int sh = 20;
-        int sw = 40;
+        int screenHeight = 20;
+        int screenWeight = 40;
 
-        List<int[]> s = new ArrayList<>();
-        s.add(new int[]{10, 10});
-        s.add(new int[]{10, 9});
-        s.add(new int[]{10, 8});
+        List<int[]> snake = new ArrayList<>();
+        snake.add(new int[]{10, 10});
+        snake.add(new int[]{10, 9});
+        snake.add(new int[]{10, 8});
 
         Random r = new Random();
-        int[] f = new int[]{r.nextInt(sh - 2) + 1, r.nextInt(sw - 2) + 1};  // 'f' = food?
+        int[] food = new int[]{r.nextInt(screenHeight - 2) + 1, r.nextInt(screenWeight - 2) + 1};  // 'f' = food?
 
-        String d = "R";
-        int sc = 0;
+        Direction d = Direction.valueOf("R");
+        int score = 0;
 
         while (true) {
             if (System.in.available() > 0) {
                 char c = (char) System.in.read();
-                if (c == 'a' && !d.equals("R")) d = "L";
-                else if (c == 'd' && !d.equals("L")) d = "R";
-                else if (c == 'w' && !d.equals("D")) d = "U";
-                else if (c == 's' && !d.equals("U")) d = "D";
+                if (c == 'a' && !d.equals("R")) d = Direction.valueOf("L");
+                else if (c == 'd' && !d.equals("L")) d = Direction.valueOf("R");
+                else if (c == 'w' && !d.equals("D")) d = Direction.valueOf("U");
+                else if (c == 's' && !d.equals("U")) d = Direction.valueOf("D");
             }
 
-            int[] hd = mv(s.get(0), d);
-            if (hd[0] <= 0 || hd[0] >= sh - 1 || hd[1] <= 0 || hd[1] >= sw - 1) {
-                System.out.println("GAME OVER - SCORE = " + sc);
+            int[] heightDirection = move(snake.get(0), d);
+            if (heightDirection[0] <= 0 || heightDirection[0] >= screenHeight - 1 || heightDirection[1] <= 0 || heightDirection[1] >= screenWeight - 1) {
+                System.out.println("GAME OVER - SCORE = " + score);
                 return;
             }
 
            // Vérification de collision en O(n) — on pourrait utiliser un Set pour obtenir du O(1)
-            for (int i = 0; i < s.size(); i++) {
-                int[] b = s.get(i);
-                if (hd[0] == b[0] && hd[1] == b[1]) {
-                    System.out.println("GAME OVER - SCORE = " + sc);
+            for (int i = 0; i < snake.size(); i++) {
+                int[] b = snake.get(i);
+                if (heightDirection[0] == b[0] && heightDirection[1] == b[1]) {
+                    System.out.println("GAME OVER - SCORE = " + score);
                     return;
                 }
             }
 
-            if (hd[0] == f[0] && hd[1] == f[1]) {
-                sc++;
-                f = new int[]{r.nextInt(sh - 2) + 1, r.nextInt(sw - 2) + 1};
+            if (heightDirection[0] == food[0] && heightDirection[1] == food[1]) {
+                score++;
+                food = new int[]{r.nextInt(screenHeight - 2) + 1, r.nextInt(screenWeight - 2) + 1};
             } else {
-                s.remove(s.size() - 1);
+                snake.remove(snake.size() - 1);
             }
 
-            s.add(0, hd);
+            snake.add(0, heightDirection);
 
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < sh; i++) {
-                for (int j = 0; j < sw; j++) {
+            for (int i = 0; i < screenHeight; i++) {
+                for (int j = 0; j < screenWeight; j++) {
                     boolean drawn = false;
 
-                    if (i == f[0] && j == f[1]) {
+                    if (i == food[0] && j == food[1]) {
                         sb.append("*");
                         drawn = true;
                     }
 
-                    for (int[] px : s) {
+                    for (int[] px : snake) {
                         if (px[0] == i && px[1] == j) {
                             sb.append("#");
                             drawn = true;
@@ -106,7 +108,7 @@ public class BadSnake {
                     }
 
                     if (!drawn) {
-                        if (i == 0 || j == 0 || i == sh - 1 || j == sw - 1) 
+                        if (i == 0 || j == 0 || i == screenHeight - 1 || j == screenWeight - 1)
                             sb.append("X");
                         else 
                             sb.append(" ");
@@ -118,7 +120,7 @@ public class BadSnake {
             System.out.print("\033[H\033[2J");  
             System.out.flush();
             System.out.println(sb.toString());
-            System.out.println("Score: " + sc);
+            System.out.println("Score: " + score);
 
             Thread.sleep(120);
         }
