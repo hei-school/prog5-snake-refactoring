@@ -1,6 +1,9 @@
 package snake;
 
 import snake.gameLogic.Direction;
+import snake.gameLogic.Food;
+import snake.gameLogic.Position;
+import snake.gameLogic.Snake;
 
 import java.util.*;
 import java.io.IOException;
@@ -32,97 +35,92 @@ import java.io.IOException;
  * - Ajouter des commentaires
  */
 public class BadSnake {
-    public static int[] move(int[] height, Direction direction) {
-        int[] key = new int[]{height[0], height[1]};
-        if (direction.equals("L")) key[1]--;
-        else if (direction.equals("R")) key[1]++;
-        else if (direction.equals("U")) key[0]--;
-        else if (direction.equals("D")) key[0]++;
-        return key;
-    }
 
-    public static void main(String[] args) throws Exception {
-        int screenHeight = 20;
-        int screenWeight = 40;
+        public static void main(String[] args) throws Exception {
+            final int screenHeight = 20;
+            final int screenWidth = 40;
+            final int x = 10;
+            final int y = 10;
+            final int borderOffset = 1;
 
-        List<int[]> snake = new ArrayList<>();
-        snake.add(new int[]{10, 10});
-        snake.add(new int[]{10, 9});
-        snake.add(new int[]{10, 8});
+            Snake snake = new Snake(x, y);
+            List<int[]> snakeBody = snake.getBody();
 
-        Random r = new Random();
-        int[] food = new int[]{r.nextInt(screenHeight - 2) + 1, r.nextInt(screenWeight - 2) + 1};  // 'f' = food?
+            Food food = new Food(screenHeight, screenWidth);
 
-        Direction d = Direction.valueOf("R");
-        int score = 0;
+            Direction direction = Direction.R;
+            int score = 0;
 
-        while (true) {
-            if (System.in.available() > 0) {
-                char c = (char) System.in.read();
-                if (c == 'a' && !d.equals("R")) d = Direction.valueOf("L");
-                else if (c == 'd' && !d.equals("L")) d = Direction.valueOf("R");
-                else if (c == 'w' && !d.equals("D")) d = Direction.valueOf("U");
-                else if (c == 's' && !d.equals("U")) d = Direction.valueOf("D");
-            }
+            while (true) {
+                if (System.in.available() > 0) {
+                    char c = (char) System.in.read();
+                    if (c == 'a' && direction != Direction.R) direction = Direction.L;
+                    else if (c == 'd' && direction != Direction.L) direction = Direction.R;
+                    else if (c == 'w' && direction != Direction.D) direction = Direction.U;
+                    else if (c == 's' && direction != Direction.U) direction = Direction.D;
+                }
 
-            int[] heightDirection = move(snake.get(0), d);
-            if (heightDirection[0] <= 0 || heightDirection[0] >= screenHeight - 1 || heightDirection[1] <= 0 || heightDirection[1] >= screenWeight - 1) {
-                System.out.println("GAME OVER - SCORE = " + score);
-                return;
-            }
+                int[] head = Position.move(snakeBody.get(0), direction);
 
-           // Vérification de collision en O(n) — on pourrait utiliser un Set pour obtenir du O(1)
-            for (int i = 0; i < snake.size(); i++) {
-                int[] b = snake.get(i);
-                if (heightDirection[0] == b[0] && heightDirection[1] == b[1]) {
+                if (head[0] <= 0 || head[0] >= screenHeight - borderOffset
+                        || head[1] <= 0 || head[1] >= screenWidth - borderOffset) {
                     System.out.println("GAME OVER - SCORE = " + score);
                     return;
                 }
-            }
 
-            if (heightDirection[0] == food[0] && heightDirection[1] == food[1]) {
-                score++;
-                food = new int[]{r.nextInt(screenHeight - 2) + 1, r.nextInt(screenWeight - 2) + 1};
-            } else {
-                snake.remove(snake.size() - 1);
-            }
-
-            snake.add(0, heightDirection);
-
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < screenHeight; i++) {
-                for (int j = 0; j < screenWeight; j++) {
-                    boolean drawn = false;
-
-                    if (i == food[0] && j == food[1]) {
-                        sb.append("*");
-                        drawn = true;
-                    }
-
-                    for (int[] px : snake) {
-                        if (px[0] == i && px[1] == j) {
-                            sb.append("#");
-                            drawn = true;
-                            break;
-                        }
-                    }
-
-                    if (!drawn) {
-                        if (i == 0 || j == 0 || i == screenHeight - 1 || j == screenWeight - 1)
-                            sb.append("X");
-                        else 
-                            sb.append(" ");
+                // Vérification de collision en O(n) — on pourrait utiliser un Set pour obtenir du O(1)
+                for (int[] b : snakeBody) {
+                    if (head[0] == b[0] && head[1] == b[1]) {
+                        System.out.println("GAME OVER - SCORE = " + score);
+                        return;
                     }
                 }
-                sb.append("\n");
+
+                int[] foodPos = food.getPlacement();
+
+                if (head[0] == foodPos[0] && head[1] == foodPos[1]) {
+                    score++;
+                    food = new Food(screenHeight, screenWidth);
+                } else {
+                    snakeBody.remove(snakeBody.size() - 1);
+                }
+
+                snakeBody.add(0, head);
+
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < screenHeight; i++) {
+                    for (int j = 0; j < screenWidth; j++) {
+                        boolean drawn = false;
+
+                        if (i == foodPos[0] && j == foodPos[1]) {
+                            sb.append("*");
+                            drawn = true;
+                        }
+
+                        for (int[] px : snakeBody) {
+                            if (px[0] == i && px[1] == j) {
+                                sb.append("#");
+                                drawn = true;
+                                break;
+                            }
+                        }
+
+                        if (!drawn) {
+                            if (i == 0 || j == 0 || i == screenHeight - 1 || j == screenWidth - 1)
+                                sb.append("X");
+                            else
+                                sb.append(" ");
+                        }
+                    }
+                    sb.append("\n");
+                }
+
+                System.out.print("\033[H\033[2J");
+                System.out.flush();
+                System.out.println(sb.toString());
+                System.out.println("Score: " + score);
+
+                Thread.sleep(120);
             }
-
-            System.out.print("\033[H\033[2J");  
-            System.out.flush();
-            System.out.println(sb.toString());
-            System.out.println("Score: " + score);
-
-            Thread.sleep(120);
         }
     }
-}
