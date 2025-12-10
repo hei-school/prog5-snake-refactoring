@@ -43,6 +43,7 @@ public class BadSnake {
         int sh = 20;
         int sw = 40;
 
+        //this is the snake
         List<int[]> s = new ArrayList<>();
         s.add(new int[]{10, 10});
         s.add(new int[]{10, 9});
@@ -63,6 +64,7 @@ public class BadSnake {
                 else if (c == 's' && !d.equals("U")) d = "D";
             }
 
+            // this is the moves that calculates the positoin of the head
             int[] hd = mv(s.get(0), d);
             if (hd[0] <= 0 || hd[0] >= sh - 1 || hd[1] <= 0 || hd[1] >= sw - 1) {
                 System.out.println("GAME OVER - SCORE = " + sc);
