@@ -16,6 +16,7 @@ public class Game {
         food = new Food(SCREEN_HEIGHT, SCREEN_WIDTH);
     }
 
+    // Interprets user input while preventing 180° turns.
     public void handleInput(char input) {
         switch (input) {
             case 'w' -> { if (direction != Direction.DOWN) direction = Direction.UP; }
@@ -25,9 +26,11 @@ public class Game {
         }
     }
 
+    // Advances the game by one tick. Returns false when the game is over.
     public boolean update() {
         Position nextHead = snake.getHead().copy();
 
+        // Compute next head position
         switch (direction) {
             case UP -> nextHead.row--;
             case DOWN -> nextHead.row++;
@@ -35,24 +38,28 @@ public class Game {
             case RIGHT -> nextHead.col++;
         }
 
+        // Boundary + self-collision handling
         if (nextHead.row <= 0 || nextHead.row >= SCREEN_HEIGHT - 1 ||
                 nextHead.col <= 0 || nextHead.col >= SCREEN_WIDTH - 1 ||
                 snake.collidesWithSelf()) {
-            return false; // Game over
+
+            return false;
         }
 
         boolean eating = nextHead.equals(food.getPosition());
 
+        // Move snake, optionally growing
         snake.move(direction, eating);
 
         if (eating) {
             score++;
-            food.respawn(SCREEN_HEIGHT, SCREEN_WIDTH);
+            food.respawn(SCREEN_HEIGHT, SCREEN_WIDTH);  // New food location
         }
 
         return true;
     }
 
+    // Renders the full board (snake, food, borders).
     public void render() {
         StringBuilder sb = new StringBuilder();
 
@@ -62,18 +69,22 @@ public class Game {
                 Position p = new Position(i, j);
 
                 if (p.equals(food.getPosition())) {
-                    sb.append("*");
-                } else if (snake.getBody().stream().anyMatch(b -> b.equals(p))) {
-                    sb.append("#");
-                } else if (i == 0 || j == 0 || i == SCREEN_HEIGHT - 1 || j == SCREEN_WIDTH - 1) {
-                    sb.append("X");
-                } else {
+                    sb.append("*"); // food
+                }
+                else if (snake.getBody().stream().anyMatch(b -> b.equals(p))) {
+                    sb.append("#"); // snake body
+                }
+                else if (i == 0 || j == 0 || i == SCREEN_HEIGHT - 1 || j == SCREEN_WIDTH - 1) {
+                    sb.append("X"); // wall
+                }
+                else {
                     sb.append(" ");
                 }
             }
             sb.append("\n");
         }
 
+        // Clear console & print frame
         System.out.print("\033[H\033[2J");
         System.out.flush();
 
