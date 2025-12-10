@@ -1,7 +1,6 @@
-package snake;
+package src.snake;
 
 import java.util.*;
-import java.io.IOException;
 
 /**
  * EXERCICE DE REFACTORING
