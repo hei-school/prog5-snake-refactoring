@@ -1,0 +1,78 @@
+package snake;
+
+public class Game {
+
+    public static final int SCREEN_HEIGHT = 20;
+    public static final int SCREEN_WIDTH  = 40;
+    public static final int TICK_DELAY    = 120;
+
+    private Snake snake;
+    private Food food;
+    private int score = 0;
+
+    public void start() throws Exception {
+        snake = new Snake(new Position(10, 10));
+        food = new Food(SCREEN_HEIGHT, SCREEN_WIDTH);
+
+        while (true) {
+            handleInput();
+            update();
+            render();
+            Thread.sleep(TICK_DELAY);
+        }
+    }
+
+    private void handleInput() throws Exception {
+        if (System.in.available() == 0) return;
+
+        char c = (char) System.in.read();
+        switch (c) {
+            case 'a' -> snake.setDirection(Direction.LEFT);
+            case 'd' -> snake.setDirection(Direction.RIGHT);
+            case 'w' -> snake.setDirection(Direction.UP);
+            case 's' -> snake.setDirection(Direction.DOWN);
+        }
+    }
+
+    private void update() {
+        Position newHead = snake.getHead().move(Direction.RIGHT); //Calculer si collision
+
+        // Collision avec les murs
+        Position head = snake.getHead();
+        if (head.row <= 0 || head.row >= SCREEN_HEIGHT - 1 ||
+                head.col <= 0 || head.col >= SCREEN_WIDTH - 1 ||
+                snake.getBody().subList(1, snake.getBody().size()).contains(head)) {
+            System.out.println("GAME OVER - SCORE = " + score);
+            System.exit(0);
+        }
+
+        // Vérifie si snake mange la nourriture
+        boolean eats = head.equals(food.getPosition());
+        snake.move(eats);
+
+        if (eats) {
+            score++;
+            food.generate(SCREEN_HEIGHT, SCREEN_WIDTH);
+        }
+    }
+
+    private void render() {
+        StringBuilder sb = new StringBuilder();
+
+        for (int row = 0; row < SCREEN_HEIGHT; row++) {
+            for (int col = 0; col < SCREEN_WIDTH; col++) {
+                Position pos = new Position(row, col);
+
+                if (pos.equals(food.getPosition())) sb.append("*");
+                else if (snake.collidesWith(pos)) sb.append("#");
+                else if (row == 0 || col == 0 || row == SCREEN_HEIGHT - 1 || col == SCREEN_WIDTH - 1) sb.append("X");
+                else sb.append(" ");
+            }
+            sb.append("\n");
+        }
+
+        System.out.print("\033[H\033[2J"); 
+        System.out.flush();
+        System.out.print(sb + "Score: " + score + "\n");
+    }
+}
