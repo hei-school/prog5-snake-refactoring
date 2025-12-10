@@ -18,10 +18,6 @@ public class Position {
         return x == p.x && y == p.y;
     }
 
-    public int hashCode() {
-        return Objects.hash(x, y);
-    }
-
     public int x() {
         return this.x;
     }
