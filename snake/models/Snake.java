@@ -3,28 +3,28 @@ package snake.models;
 import java.util.*;
 
 public class Snake {
-    private LinkedList<Position> body;
+    private List<Position> body;
 
     public Snake(Position head, int initialLength) {
-        body = new LinkedList<>();
+        body = new ArrayList<>();
         for (int i = 0; i < initialLength; i++) {
             body.add(new Position(head.getRow(), head.getCol() - i));
         }
     }
 
-    public LinkedList<Position> getBody() {
+    public List<Position> getBody() {
         return body;
     }
 
     public Position getHead() {
-        return body.getFirst();
+        return body.get(0);
     }
 
     public void move(Direction dir, boolean grow) {
         Position newHead = getNextHeadPosition(dir);
-        body.addFirst(newHead);
+        body.add(0, newHead); // ajout en début
         if (!grow) {
-            body.removeLast();
+            body.remove(body.size() - 1); // suppression à la fin
         }
     }
 
