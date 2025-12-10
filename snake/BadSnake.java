@@ -1,5 +1,7 @@
 package snake;
 
+import snake.model.Game;
+
 import java.util.*;
 import java.io.IOException;
 
@@ -40,13 +42,15 @@ public class BadSnake {
     }
 
     public static void main(String[] args) throws Exception {
+        new Game().run();
+        /*
         int sh = 20;
         int sw = 40;
 
-        List<int[]> s = new ArrayList<>();
-        s.add(new int[]{10, 10});
-        s.add(new int[]{10, 9});
-        s.add(new int[]{10, 8});
+        List<int[]> snake = new ArrayList<>();
+        snake.add(new int[]{10, 10});
+        snake.add(new int[]{10, 9});
+        snake.add(new int[]{10, 8});
 
         Random r = new Random();
         int[] f = new int[]{r.nextInt(sh - 2) + 1, r.nextInt(sw - 2) + 1};  // 'f' = food?
@@ -63,15 +67,15 @@ public class BadSnake {
                 else if (c == 's' && !d.equals("U")) d = "D";
             }
 
-            int[] hd = mv(s.get(0), d);
+            int[] hd = mv(snake.get(0), d);
             if (hd[0] <= 0 || hd[0] >= sh - 1 || hd[1] <= 0 || hd[1] >= sw - 1) {
                 System.out.println("GAME OVER - SCORE = " + sc);
                 return;
             }
 
            // Vérification de collision en O(n) — on pourrait utiliser un Set pour obtenir du O(1)
-            for (int i = 0; i < s.size(); i++) {
-                int[] b = s.get(i);
+            for (int i = 0; i < snake.size(); i++) {
+                int[] b = snake.get(i);
                 if (hd[0] == b[0] && hd[1] == b[1]) {
                     System.out.println("GAME OVER - SCORE = " + sc);
                     return;
@@ -82,10 +86,10 @@ public class BadSnake {
                 sc++;
                 f = new int[]{r.nextInt(sh - 2) + 1, r.nextInt(sw - 2) + 1};
             } else {
-                s.remove(s.size() - 1);
+                snake.remove(snake.size() - 1);
             }
 
-            s.add(0, hd);
+            snake.add(0, hd);
 
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < sh; i++) {
@@ -97,7 +101,7 @@ public class BadSnake {
                         drawn = true;
                     }
 
-                    for (int[] px : s) {
+                    for (int[] px : snake) {
                         if (px[0] == i && px[1] == j) {
                             sb.append("#");
                             drawn = true;
@@ -122,5 +126,7 @@ public class BadSnake {
 
             Thread.sleep(120);
         }
+
+         */
     }
 }
