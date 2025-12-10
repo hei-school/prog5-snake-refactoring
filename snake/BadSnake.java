@@ -89,7 +89,7 @@ public class BadSnake {
 
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < sh; i++) {
-                for (int j = 0; j < sw; j++) {
+            for (int j = 0; j < sw; j++) {
                     boolean drawn = false;
 
                     if (i == f[0] && j == f[1]) {
