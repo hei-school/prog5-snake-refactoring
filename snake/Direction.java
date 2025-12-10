@@ -1,9 +1,6 @@
 package snake;
 
-/**
- * Représente les quatre directions possibles de déplacement du serpent.
- * Chaque direction est associée à un changement de ligne (dRow) et de colonne (dCol).
- */
+
 public enum Direction {
     UP(-1, 0),
     DOWN(1, 0),
@@ -26,12 +23,6 @@ public enum Direction {
         return dCol;
     }
 
-    /**
-     * Vérifie si la direction actuelle est opposée à une autre direction.
-     * Utile pour empêcher le serpent de faire demi-tour sur lui-même.
-     * @param other L'autre direction.
-     * @return true si les directions sont opposées.
-     */
     public boolean isOpposite(Direction other) {
         return this.dRow == -other.dRow && this.dCol == -other.dCol;
     }

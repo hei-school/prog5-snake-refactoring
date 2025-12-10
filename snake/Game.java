@@ -5,10 +5,7 @@ import java.util.List;
 
 import static snake.GameConstants.*;
 
-/**
- * Classe principale du jeu, gérant la boucle de jeu, les mises à jour et les collisions.
- * Remplace la méthode main() monolithique.
- */
+
 public class Game {
     private final Snake snake;
     private final Food food;

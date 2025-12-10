@@ -2,9 +2,7 @@ package snake;
 
 import java.util.Random;
 
-/**
- * Représente la nourriture que le serpent doit manger.
- */
+
 public class Food {
     private Position position;
     private final Random random = new Random();
