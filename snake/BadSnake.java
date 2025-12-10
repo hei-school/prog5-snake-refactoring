@@ -30,13 +30,6 @@ import java.io.IOException;
  * - Ajouter des commentaires
  */
 public class BadSnake {
-    /**
-     * Mouvement 
-     * 
-     * h => Height 
-     * d => Direction
-     * k => Position
-     */
     public static int[] mv(int[] h, String d) {
         int[] k = new int[]{h[0], h[1]};
         if (d.equals("L")) k[1]--;
@@ -47,10 +40,9 @@ public class BadSnake {
     }
 
     public static void main(String[] args) throws Exception {
-        int sh = 20; // Screen Height
-        int sw = 40; // Screen width
+        int sh = 20;
+        int sw = 40;
 
-        // Snake
         List<int[]> s = new ArrayList<>();
         s.add(new int[]{10, 10});
         s.add(new int[]{10, 9});
@@ -60,19 +52,17 @@ public class BadSnake {
         int[] f = new int[]{r.nextInt(sh - 2) + 1, r.nextInt(sw - 2) + 1};  // 'f' = food?
 
         String d = "R";
-        int sc = 0; // Score
+        int sc = 0;
 
         while (true) {
-            // Navigation
             if (System.in.available() > 0) {
-                char c = (char) System.in.read(); // Character
+                char c = (char) System.in.read();
                 if (c == 'a' && !d.equals("R")) d = "L";
                 else if (c == 'd' && !d.equals("L")) d = "R";
                 else if (c == 'w' && !d.equals("D")) d = "U";
                 else if (c == 's' && !d.equals("U")) d = "D";
             }
 
-            // Position tête serpent 
             int[] hd = mv(s.get(0), d);
             if (hd[0] <= 0 || hd[0] >= sh - 1 || hd[1] <= 0 || hd[1] >= sw - 1) {
                 System.out.println("GAME OVER - SCORE = " + sc);
@@ -107,7 +97,7 @@ public class BadSnake {
                         drawn = true;
                     }
 
-                    for (int[] px : s) { // Pixel
+                    for (int[] px : s) {
                         if (px[0] == i && px[1] == j) {
                             sb.append("#");
                             drawn = true;
