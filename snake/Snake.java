@@ -3,6 +3,7 @@ package snake;
 import java.util.Deque;
 import java.util.LinkedList;
 
+/** Représente le serpent */
 class Snake {
   private final Deque<Position> body;
   private Direction currentDirection;
@@ -11,9 +12,11 @@ class Snake {
     this.body = new LinkedList<>();
     this.currentDirection = initialDirection;
 
+    // Initialiser le serpent avec 3 segments
     body.add(startPosition);
     body.add(startPosition.move(initialDirection.getOpposite()));
-    body.add(startPosition.move(initialDirection.getOpposite()).move(initialDirection.getOpposite()));
+    body.add(
+        startPosition.move(initialDirection.getOpposite()).move(initialDirection.getOpposite()));
   }
 
   public Position getHead() {
@@ -29,6 +32,7 @@ class Snake {
   }
 
   public void setDirection(Direction newDirection) {
+    // Empêcher le serpent de faire demi-tour
     if (newDirection != currentDirection.getOpposite()) {
       this.currentDirection = newDirection;
     }
