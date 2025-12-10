@@ -1,7 +1,11 @@
 package snake;
 
+import snake.Class.Game;
+
 import java.util.*;
 import java.io.IOException;
+
+import static snake.Class.Game.TICK_DELAY_MS;
 
 /**
  * EXERCICE DE REFACTORING
@@ -30,107 +34,22 @@ import java.io.IOException;
  * - Ajouter des commentaires
  */
 public class BadSnake {
-    /**
-     * Mouvement 
-     * 
-     * h => Height 
-     * d => Direction
-     * k => Position
-     */
-    public static int[] mv(int[] h, String d) {
-        int[] k = new int[]{h[0], h[1]};
-        if (d.equals("L")) k[1]--;
-        else if (d.equals("R")) k[1]++;
-        else if (d.equals("U")) k[0]--;
-        else if (d.equals("D")) k[0]++;
-        return k;
-    }
-
-    public static void main(String[] args) throws Exception {
-        int sh = 20; // Screen Height
-        int sw = 40; // Screen width
-
-        // Snake
-        List<int[]> s = new ArrayList<>();
-        s.add(new int[]{10, 10});
-        s.add(new int[]{10, 9});
-        s.add(new int[]{10, 8});
-
-        Random r = new Random();
-        int[] f = new int[]{r.nextInt(sh - 2) + 1, r.nextInt(sw - 2) + 1};  // 'f' = food?
-
-        String d = "R";
-        int sc = 0; // Score
+    public static void main(String[] args) throws IOException, InterruptedException {
+        Game game = new Game();
 
         while (true) {
-            // Navigation
             if (System.in.available() > 0) {
-                char c = (char) System.in.read(); // Character
-                if (c == 'a' && !d.equals("R")) d = "L";
-                else if (c == 'd' && !d.equals("L")) d = "R";
-                else if (c == 'w' && !d.equals("D")) d = "U";
-                else if (c == 's' && !d.equals("U")) d = "D";
+                char input = (char) System.in.read();
+                game.handleInput(input);
             }
 
-            // Position tête serpent 
-            int[] hd = mv(s.get(0), d);
-            if (hd[0] <= 0 || hd[0] >= sh - 1 || hd[1] <= 0 || hd[1] >= sw - 1) {
-                System.out.println("GAME OVER - SCORE = " + sc);
-                return;
+            if (!game.update()) {
+                System.out.println("GAME OVER!");
+                break;
             }
 
-           // Vérification de collision en O(n) — on pourrait utiliser un Set pour obtenir du O(1)
-            for (int i = 0; i < s.size(); i++) {
-                int[] b = s.get(i);
-                if (hd[0] == b[0] && hd[1] == b[1]) {
-                    System.out.println("GAME OVER - SCORE = " + sc);
-                    return;
-                }
-            }
-
-            if (hd[0] == f[0] && hd[1] == f[1]) {
-                sc++;
-                f = new int[]{r.nextInt(sh - 2) + 1, r.nextInt(sw - 2) + 1};
-            } else {
-                s.remove(s.size() - 1);
-            }
-
-            s.add(0, hd);
-
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < sh; i++) {
-                for (int j = 0; j < sw; j++) {
-                    boolean drawn = false;
-
-                    if (i == f[0] && j == f[1]) {
-                        sb.append("*");
-                        drawn = true;
-                    }
-
-                    for (int[] px : s) { // Pixel
-                        if (px[0] == i && px[1] == j) {
-                            sb.append("#");
-                            drawn = true;
-                            break;
-                        }
-                    }
-
-                    if (!drawn) {
-                        if (i == 0 || j == 0 || i == sh - 1 || j == sw - 1) 
-                            sb.append("X");
-                        else 
-                            sb.append(" ");
-                    }
-                }
-                sb.append("\n");
-            }
-
-            System.out.print("\033[H\033[2J");  
-            System.out.flush();
-            System.out.println(sb.toString());
-            System.out.println("Score: " + sc);
-
-            Thread.sleep(120);
+            game.render();
+            Thread.sleep(Game.TICK_DELAY_MS);
         }
     }
 }
