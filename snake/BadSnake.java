@@ -30,7 +30,7 @@ import java.io.IOException;
  * - Factory => Conrétiser les objets
  * - State => Snake (isMaty), Sakafo (isLany), Jeu (isTapitra)
  * - Command => execute (start, change direction)
- * 
+ *
  * EXERCICE DE REFACTORING
  *
  * Ce code fonctionne, mais viole de nombreux principes de bonne pratique.
@@ -86,7 +86,8 @@ public class BadSnake {
         Random r = new Random();
         int[] f = new int[]{r.nextInt(sh - 2) + 1, r.nextInt(sw - 2) + 1};  // 'f' = food?
 
-        String d = "R"; // Direction
+        String d = "R";
+
         int sc = 0; // Score
 
         while (true) {
