@@ -19,16 +19,16 @@ import java.io.IOException;
  *  Si => utilisateur clic sur "d" + entré et direction non "LEFT" va droite
  *  Si => utilisateur clic sur "w" + entré et direction non "DOWN" va haut
  *  Si => utilisateur clic sur "s" + entré et direction non "UP" va bas
- *  Si => Sakafo azo, mihalava Score++
- *  Si => bibilave midona amin'ny vatany/"sisinà screen" à une lapse de temps 
+ *  Si => snake eats food, Score++
+ *  Si => snake collision sur son corps/screen border à une lapse de temps
  *          => mort
  *          => Game over + show score
- *          => Reset score/bibilave/position
+ *          => Reset score/snake/position
  * 
  * Pattern :
  * - Observer => Observer direction snake
  * - Factory => Conrétiser les objets
- * - State => Snake (isMaty), Sakafo (isLany), Jeu (isTapitra)
+ * - State => Snake (isDead), food (isEatean), Jeu (isFinish)
  * - Command => execute (start, change direction)
  * 
  * EXERCICE DE REFACTORING
