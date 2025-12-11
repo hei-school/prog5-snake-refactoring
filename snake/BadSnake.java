@@ -15,15 +15,15 @@ import java.io.IOException;
  * 
  * Rules :
  * - Tant que le jeu lancé :
- *  Si => utilisateur clic sur "a" + entré et direction non "RIGHT" va gauche
- *  Si => utilisateur clic sur "d" + entré et direction non "LEFT" va droite
- *  Si => utilisateur clic sur "w" + entré et direction non "DOWN" va haut
- *  Si => utilisateur clic sur "s" + entré et direction non "UP" va bas
- *  Si => Sakafo azo, mihalava Score++
- *  Si => bibilave midona amin'ny vatany/"sisinà screen" à une lapse de temps 
- *          => mort
- *          => Game over + show score
- *          => Reset score/bibilave/position
+ * Si => utilisateur clic sur "a" + entré et direction non "RIGHT" va gauche
+ * Si => utilisateur clic sur "d" + entré et direction non "LEFT" va droite
+ * Si => utilisateur clic sur "w" + entré et direction non "DOWN" va haut
+ * Si => utilisateur clic sur "s" + entré et direction non "UP" va bas
+ * Si => Sakafo azo, mihalava Score++
+ * Si => bibilave midona amin'ny vatany/"sisinà screen" à une lapse de temps
+ * => mort
+ * => Game over + show score
+ * => Reset score/bibilave/position
  * 
  * Pattern :
  * - Observer => Observer direction snake
@@ -52,24 +52,29 @@ import java.io.IOException;
  * - Créer des classes : Game, Snake, Food, Position, Direction (enum)
  * - Extraire des constantes : SCREEN_HEIGHT, SCREEN_WIDTH, TICK_DELAY
  * - Séparer en méthodes : update(), render(), handleInput(), checkCollisions()
- * - Utiliser des noms explicites : screenHeight au lieu de sh, snake au lieu de s
+ * - Utiliser des noms explicites : screenHeight au lieu de sh, snake au lieu de
+ * s
  * - Envisager une grille 2D pour une détection de collision plus efficace
  * - Ajouter des commentaires
  */
 public class BadSnake {
     /**
-     * Mouvement 
+     * Mouvement
      * 
-     * h => Height 
+     * h => Height
      * d => Direction
      * k => Position
      */
     public static int[] mv(int[] h, String d) {
-        int[] k = new int[]{h[0], h[1]};
-        if (d.equals("L")) k[1]--;
-        else if (d.equals("R")) k[1]++;
-        else if (d.equals("U")) k[0]--;
-        else if (d.equals("D")) k[0]++;
+        int[] k = new int[] { h[0], h[1] };
+        if (d.equals("L"))
+            k[1]--;
+        else if (d.equals("R"))
+            k[1]++;
+        else if (d.equals("U"))
+            k[0]--;
+        else if (d.equals("D"))
+            k[0]++;
         return k;
     }
 
@@ -79,12 +84,12 @@ public class BadSnake {
 
         // Snake
         List<int[]> s = new ArrayList<>();
-        s.add(new int[]{10, 10});
-        s.add(new int[]{10, 9});
-        s.add(new int[]{10, 8});
+        s.add(new int[] { 10, 10 });
+        s.add(new int[] { 10, 9 });
+        s.add(new int[] { 10, 8 });
 
         Random r = new Random();
-        int[] f = new int[]{r.nextInt(sh - 2) + 1, r.nextInt(sw - 2) + 1};  // 'f' = food?
+        int[] f = new int[] { r.nextInt(sh - 2) + 1, r.nextInt(sw - 2) + 1 }; // 'f' = food?
 
         String d = "R"; // Direction
         int sc = 0; // Score
@@ -93,20 +98,25 @@ public class BadSnake {
             // Navigation
             if (System.in.available() > 0) {
                 char c = (char) System.in.read(); // Character
-                if (c == 'a' && !d.equals("R")) d = "L";
-                else if (c == 'd' && !d.equals("L")) d = "R";
-                else if (c == 'w' && !d.equals("D")) d = "U";
-                else if (c == 's' && !d.equals("U")) d = "D";
+                if (c == 'a' && !d.equals("R"))
+                    d = "L";
+                else if (c == 'd' && !d.equals("L"))
+                    d = "R";
+                else if (c == 'w' && !d.equals("D"))
+                    d = "U";
+                else if (c == 's' && !d.equals("U"))
+                    d = "D";
             }
 
-            // Position tête serpent 
+            // Position tête serpent
             int[] hd = mv(s.get(0), d);
             if (hd[0] <= 0 || hd[0] >= sh - 1 || hd[1] <= 0 || hd[1] >= sw - 1) {
                 System.out.println("GAME OVER - SCORE = " + sc);
                 return;
             }
 
-           // Vérification de collision en O(n) — on pourrait utiliser un Set pour obtenir du O(1)
+            // Vérification de collision en O(n) — on pourrait utiliser un Set pour obtenir
+            // du O(1)
             for (int i = 0; i < s.size(); i++) {
                 int[] b = s.get(i);
                 if (hd[0] == b[0] && hd[1] == b[1]) {
@@ -117,7 +127,7 @@ public class BadSnake {
 
             if (hd[0] == f[0] && hd[1] == f[1]) {
                 sc++;
-                f = new int[]{r.nextInt(sh - 2) + 1, r.nextInt(sw - 2) + 1};
+                f = new int[] { r.nextInt(sh - 2) + 1, r.nextInt(sw - 2) + 1 };
             } else {
                 s.remove(s.size() - 1);
             }
@@ -143,16 +153,16 @@ public class BadSnake {
                     }
 
                     if (!drawn) {
-                        if (i == 0 || j == 0 || i == sh - 1 || j == sw - 1) 
+                        if (i == 0 || j == 0 || i == sh - 1 || j == sw - 1)
                             sb.append("X");
-                        else 
+                        else
                             sb.append(" ");
                     }
                 }
                 sb.append("\n");
             }
 
-            System.out.print("\033[H\033[2J");  
+            System.out.print("\033[H\033[2J");
             System.out.flush();
             System.out.println(sb.toString());
             System.out.println("Score: " + sc);
